@@ -1,0 +1,35 @@
+# Python bytecode / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Tool caches
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+
+# Local environment / secrets
+.env
+.env.*
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Local runtime/session artifacts
+.tronclass_session.json
+*.session
+*.token
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
