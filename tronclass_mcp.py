@@ -95,6 +95,10 @@ def _restore_api(session_data: dict) -> TronClassAPI:
     for name, value in cookies.items():
         api.session.cookies.set(name, value)
 
+    # IMPORTANT: Restore X-SESSION-ID header (this was missing and causing API calls to fail!)
+    if api.session_token:
+        api.session.headers.update({"X-SESSION-ID": api.session_token})
+
     return api
 
 
