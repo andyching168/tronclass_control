@@ -432,14 +432,23 @@ def get_homework(course_id: str) -> str:
             submission = api.get_student_submission(course_id, hw_id)
             status = "已繳" if submission and submission.get("created_at") else "未繳"
 
-            score = None
-            if submission:
-                score = submission.get("score")
+            # 優先讀取作業本身的 score 欄位
+            score = hw.get("score")
+            score_published = hw.get("score_published", False)
+            
+            if score is None and submission:
+                # 作業本身沒分數，從繳交記錄讀取 final_score
+                score = submission.get("final_score")
 
             if score is not None:
-                lines.append(
-                    f"• {title}\n  截止：{end_time} | 狀態：{status} | 成績：{score}"
-                )
+                if score_published:
+                    lines.append(
+                        f"• {title}\n  截止：{end_time} | 狀態：{status} | 成績：{score}"
+                    )
+                else:
+                    lines.append(
+                        f"• {title}\n  截止：{end_time} | 狀態：{status} | 成績：{score} (尚未公布)"
+                    )
             else:
                 lines.append(
                     f"• {title}\n  截止：{end_time} | 狀態：{status} | 成績：尚未評分"

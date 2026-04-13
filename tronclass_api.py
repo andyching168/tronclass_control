@@ -465,18 +465,24 @@ class TronClassAPI:
                         print(f"    - {title}")
                         print(f"      Deadline: {end_time}")
 
+                        # 優先從作業本身的 score 欄位判斷
                         if score is not None and score_published:
-                            print(f"      Score: {score}")
+                            print(f"      分數: {score}")
                         elif score is not None:
-                            print(f"      Score: {score} (未公布)")
+                            # score_published=False 但分數已存在（老師已給分但尚未公布）
+                            print(f"      分數: {score} (尚未公布)")
                         else:
-                            print(f"      Score: 尚未評分")
-
-                        submission = self.get_student_submission(course_id, hw_id)
-                        if submission and submission.get("created_at"):
-                            sub_score = submission.get("score")
-                            if sub_score is not None:
-                                print(f"      成績: {sub_score}")
+                            # 作業本身沒分數，再查學生的繳交記錄
+                            submission = self.get_student_submission(course_id, hw_id)
+                            if submission and submission.get("created_at"):
+                                # 正確讀取 final_score 而非 score
+                                final_score = submission.get("final_score")
+                                if final_score is not None:
+                                    print(f"      分數: {final_score}")
+                                else:
+                                    print(f"      分數: 尚未評分")
+                            else:
+                                print(f"      分數: 尚未評分")
         return data
 
     def get_activity_detail(self, activity_id):
